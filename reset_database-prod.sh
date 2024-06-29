@@ -18,6 +18,9 @@ bundle exec rake search:index_tags
 bundle exec rake search:index_works
 bundle exec rake search:index_pseuds
 bundle exec rake search:index_bookmarks
+docker compose run web bundle exec rake db:schema:load
+docker compose run web bundle exec rails runner script/ensure_required_tags.rb
+docker compose run web bundle exec rake skins:load_site_skins
 ;;
 *)
 echo "Only supported in test and development (e.g. 'RAILS_ENV=test ./script/reset_database.sh')"
