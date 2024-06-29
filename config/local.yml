@@ -57,17 +57,16 @@ SMTP_ENABLE_STARTTLS: false
 #SMTP_AUTHENTICATION: # :plain, :login or :cram_md5
 
 # Branding
-APP_URL: 'http://www.example.org'
-APP_NAME: 'Example Archive'
-APP_HOST: 'archiveofourown.org'
-APP_SHORT_NAME: 'AO3'
-LOGO: 'logo.png'
-ALT_LOGO: 'Archive of Our Own'
+APP_URL: '192.168.1.x'
+APP_NAME: 'Justified Archive'
+APP_HOST: 'justifiedarchive.com'
+LOGO: '2677-cinnamoroll.png'
+ALT_LOGO: 'Justified Archive'
 OTWLOGO: 'OTWLogo.png'
 OTWALT_LOGO: 'OTW Logo:closing the circle of the copyright symbol, it symbolizes our creative engagement with media: participating and not just consuming.'
 REVISION: ''
-ES_URL: 'http://127.0.0.1:9400'
-MEMCACHED_SERVERS: '127.0.0.1:11211'
+ES_URL: 'es:9200'
+MEMCACHED_SERVERS: ['mc:11211:1']
 
 # tag settings
 DELIMITER_FOR_INPUT: ','  # if you change this, you will need to change
