@@ -34,11 +34,11 @@ services:
       - "3306:3306"
     command:
       [
-        "mysqld",
+        "mysql2d",
         "--sql-mode=NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION",
       ]
     volumes:
-      - /home/kat/slay/otwarchive/config/docker:/var/lib/mysql:rw
+      - /home/kat/slay/otwarchive/config/docker:/var/lib/mysql2:rw
   redis:
     image: redis:5
     ports:
