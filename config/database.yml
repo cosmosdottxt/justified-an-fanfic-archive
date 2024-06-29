@@ -3,7 +3,7 @@ defaults: &defaults
   encoding: utf8mb4
   collation: utf8mb4_unicode_ci
   username: root
-  password:
+  password: Night_Comet09
 
 development:
   database: otwarchive_development
