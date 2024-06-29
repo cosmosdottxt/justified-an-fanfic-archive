@@ -21,30 +21,31 @@
 # docker compose run --rm test bundle exec cucumber features/other_a/autocomplete.feature
 # ```
 
+version: "3"
 volumes:
-  my-datavolume:
-  redis-data:
   esdata1:
+  redisdata1:
 services:
   db:
-    image: mariadb:10.5.4-focal
+    image: mariadb:10.5.4-focal 
     environment:
-      - MYSQL_ROOT_PASSWORD=change_me
+      - MYSQL_ROOT_PASSWORD=test
     ports:
       - "3306:3306"
     command:
       [
         "mysqld",
-        "--sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION",
+        "--sql-mode=NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION",
       ]
     volumes:
-      - my-datavolume:/var/lib/mysql:rw
+      - /home/kat/slay/otwarchive/config/docker:/var/lib/mysql:rw
   redis:
     image: redis:5
     ports:
       - "6379:6379"
     volumes:
-      - redis-data:/var/lib/redis:rw
+      - redisdata1:/var/lib/redis:rw
+      - ./home/kat/slay/otwarchive/config/redis-cucumber.conf:/usr/local/etc/redis/redis.conf
   es:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
     ports:
@@ -54,7 +55,9 @@ services:
     volumes:
       - esdata1:/usr/share/elasticsearch/data:rw
     environment:
-      - transport.host=localhost
+      - cluster.name=slay
+      - node.name=slay-node
+      - http.port=9200
       - bootstrap.memory_lock=false
       - "ES_JAVA_OPTS=-Xms1500m -Xmx1500m"
       - discovery.type=single-node
@@ -72,44 +75,15 @@ services:
       context: .
       dockerfile: ./config/docker/Dockerfile
     environment:
-      - RAILS_ENV=development
-      - GITPOD_WORKSPACE_ID=${GITPOD_WORKSPACE_ID:-}
-      - GITPOD_WORKSPACE_CLUSTER_HOST=${GITPOD_WORKSPACE_CLUSTER_HOST:-}
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+      - RAILS_ENV=production
+      - ES_URL=es:9200
+    command: bash -c "rm -f tmp/pids/server.pid && RAILS_ENV=production bundle exec rails server -p 3344 -b 0.0.0.0"
     volumes:
       - .:/otwa
     ports:
-      - "3000:3000"
+      - "192.168.1.204:3344:3344"
     depends_on:
       - db
       - redis
       - es
       - mc
-  chrome:
-    profiles:
-      - test
-    image: selenium/standalone-chrome
-    ports:
-      - "4444:4444"
-  test:
-    profiles:
-      - test
-    build:
-      context: .
-      dockerfile: ./config/docker/Dockerfile
-    environment:
-      - RAILS_ENV=test
-      - CHROME_URL=http://chrome:4444
-      - DOCKER=true
-      - CAPYBARA_PORT=5100
-    command: bundle exec cucumber
-    volumes:
-      - .:/otwa
-    ports:
-      - "5100:5100"
-    depends_on:
-      - db
-      - redis
-      - es
-      - mc
-      - chrome
