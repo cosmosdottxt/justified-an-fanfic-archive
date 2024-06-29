@@ -29,7 +29,7 @@ services:
   db:
     image: mariadb:10.5.4-focal 
     environment:
-      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_ROOT_PASSWORD=Night_Comet09
     ports:
       - "3306:3306"
     command:
